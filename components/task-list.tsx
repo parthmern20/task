@@ -14,12 +14,12 @@ interface TaskListProps {
 
 export function TaskList({ tasks, onComplete, onEdit, onDelete, emptyMessage = "No tasks" }: TaskListProps) {
   if (tasks.length === 0) {
-    return <div className="flex items-center justify-center h-32 text-muted-foreground">{emptyMessage}</div>
+    return <div className="flex items-center justify-center h-32 text-muted-foreground text-sm">{emptyMessage}</div>
   }
 
   return (
-    <ScrollArea className="h-[calc(100vh-280px)]">
-      <div className="space-y-3 pr-4">
+    <ScrollArea className="h-[calc(100vh-320px)] sm:h-[calc(100vh-280px)]">
+      <div className="space-y-2 sm:space-y-3 pr-4">
         {tasks.map((task) => (
           <TaskCard key={task._id} task={task} onComplete={onComplete} onEdit={onEdit} onDelete={onDelete} />
         ))}

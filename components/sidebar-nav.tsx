@@ -1,9 +1,12 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { LayoutDashboard, CalendarDays, History, ListTodo } from "lucide-react"
+import { LayoutDashboard, CalendarDays, History, ListTodo, Menu } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -11,11 +14,11 @@ const navItems = [
   { href: "/history", label: "History", icon: History },
 ]
 
-export function SidebarNav() {
+function NavContent({ onNavClick }: { onNavClick?: () => void }) {
   const pathname = usePathname()
 
   return (
-    <aside className="w-64 border-r bg-card min-h-screen p-4">
+    <>
       <div className="flex items-center gap-2 mb-8 px-2">
         <ListTodo className="h-6 w-6 text-primary" />
         <h1 className="text-xl font-bold">TaskFlow</h1>
@@ -28,6 +31,7 @@ export function SidebarNav() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={onNavClick}
               className={cn(
                 "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
                 isActive
@@ -41,6 +45,36 @@ export function SidebarNav() {
           )
         })}
       </nav>
-    </aside>
+    </>
+  )
+}
+
+export function SidebarNav() {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <>
+      <header className="md:hidden fixed top-0 left-0 right-0 z-50 bg-background border-b px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <ListTodo className="h-5 w-5 text-primary" />
+          <span className="font-bold">TaskFlow</span>
+        </div>
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <Menu className="h-5 w-5" />
+              <span className="sr-only">Toggle menu</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-64 p-4">
+            <NavContent onNavClick={() => setOpen(false)} />
+          </SheetContent>
+        </Sheet>
+      </header>
+
+      <aside className="hidden md:block w-64 border-r bg-card min-h-screen p-4 flex-shrink-0">
+        <NavContent />
+      </aside>
+    </>
   )
 }

@@ -100,58 +100,58 @@ export function HistoryView() {
   }
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Task History</h1>
-        <Button variant="outline" onClick={exportHistory}>
+    <div className="p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold">Task History</h1>
+        <Button variant="outline" size="sm" onClick={exportHistory} className="w-full sm:w-auto bg-transparent">
           <Download className="h-4 w-4 mr-2" />
           Export CSV
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6">
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-3 sm:p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Completed</p>
-                <p className="text-2xl font-bold text-green-600">{stats.completed}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Completed</p>
+                <p className="text-xl sm:text-2xl font-bold text-green-600">{stats.completed}</p>
               </div>
-              <CheckCircle className="h-8 w-8 text-green-600" />
+              <CheckCircle className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-3 sm:p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Skipped</p>
-                <p className="text-2xl font-bold text-gray-600">{stats.skipped}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Skipped</p>
+                <p className="text-xl sm:text-2xl font-bold text-gray-600">{stats.skipped}</p>
               </div>
-              <XCircle className="h-8 w-8 text-gray-600" />
+              <XCircle className="h-6 w-6 sm:h-8 sm:w-8 text-gray-600" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-3 sm:p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Deferred</p>
-                <p className="text-2xl font-bold text-amber-600">{stats.deferred}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Deferred</p>
+                <p className="text-xl sm:text-2xl font-bold text-amber-600">{stats.deferred}</p>
               </div>
-              <Clock className="h-8 w-8 text-amber-600" />
+              <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-amber-600" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-3 sm:p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Total Actions</p>
-                <p className="text-2xl font-bold">{stats.total}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">Total</p>
+                <p className="text-xl sm:text-2xl font-bold">{stats.total}</p>
               </div>
             </div>
           </CardContent>
@@ -159,20 +159,32 @@ export function HistoryView() {
       </div>
 
       <Card className="mb-6">
-        <CardContent className="p-4">
-          <div className="flex flex-wrap items-end gap-4">
-            <div className="space-y-2">
-              <Label>Start Date</Label>
-              <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+        <CardContent className="p-3 sm:p-4">
+          <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-end gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 sm:flex gap-3 sm:gap-4">
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label className="text-xs sm:text-sm">Start Date</Label>
+                <Input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="h-9 text-sm"
+                />
+              </div>
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label className="text-xs sm:text-sm">End Date</Label>
+                <Input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  className="h-9 text-sm"
+                />
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label>End Date</Label>
-              <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-            </div>
-            <div className="space-y-2">
-              <Label>Action</Label>
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label className="text-xs sm:text-sm">Action</Label>
               <Select value={actionFilter} onValueChange={setActionFilter}>
-                <SelectTrigger className="w-[150px]">
+                <SelectTrigger className="w-full sm:w-[150px] h-9 text-sm">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -191,38 +203,42 @@ export function HistoryView() {
       </Card>
 
       <Card>
-        <CardHeader>
-          <CardTitle>Activity Log</CardTitle>
+        <CardHeader className="px-3 sm:px-6">
+          <CardTitle className="text-base sm:text-lg">Activity Log</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-3 sm:px-6">
           {!history || history.length === 0 ? (
-            <p className="text-muted-foreground text-center py-8">No history entries for the selected period</p>
+            <p className="text-muted-foreground text-center text-sm py-8">No history entries for the selected period</p>
           ) : (
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {Object.entries(groupedHistory).map(([date, entries]) => (
                 <div key={date}>
-                  <h3 className="text-sm font-medium text-muted-foreground mb-3">{date}</h3>
+                  <h3 className="text-xs sm:text-sm font-medium text-muted-foreground mb-2 sm:mb-3">{date}</h3>
                   <div className="space-y-2">
                     {entries.map((entry) => {
                       const config = actionConfig[entry.action]
                       const Icon = config.icon
                       return (
-                        <div key={entry._id} className="flex items-center gap-3 p-3 rounded-lg border">
-                          <div className={cn("p-2 rounded-full", config.bg)}>
-                            <Icon className={cn("h-4 w-4", config.color)} />
+                        <div key={entry._id} className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg border">
+                          <div className={cn("p-1.5 sm:p-2 rounded-full flex-shrink-0", config.bg)}>
+                            <Icon className={cn("h-3 w-3 sm:h-4 sm:w-4", config.color)} />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="font-medium truncate">{entry.taskTitle}</p>
-                            <p className="text-sm text-muted-foreground">
+                            <p className="font-medium text-sm truncate">{entry.taskTitle}</p>
+                            <p className="text-xs text-muted-foreground">
                               {new Date(entry.timestamp).toLocaleTimeString("en-US", {
                                 hour: "numeric",
                                 minute: "2-digit",
                               })}
-                              {entry.notes && ` • ${entry.notes}`}
+                              {entry.notes && <span className="hidden sm:inline"> - {entry.notes}</span>}
                             </p>
                           </div>
-                          <Badge variant="outline" className={cn(config.bg, config.color, "border-transparent")}>
-                            {config.label}
+                          <Badge
+                            variant="outline"
+                            className={cn("text-xs flex-shrink-0", config.bg, config.color, "border-transparent")}
+                          >
+                            <span className="hidden sm:inline">{config.label}</span>
+                            <Icon className="h-3 w-3 sm:hidden" />
                           </Badge>
                         </div>
                       )

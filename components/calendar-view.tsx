@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast"
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+const DAYS_SHORT = ["S", "M", "T", "W", "T", "F", "S"]
 const MONTHS = [
   "January",
   "February",
@@ -122,7 +123,6 @@ export function CalendarView() {
       const url = isEdit ? `/api/tasks/${data._id}` : "/api/tasks"
       const method = isEdit ? "PUT" : "POST"
 
-      // If we have a selected date and this is a new task, use that date
       if (!isEdit && selectedDate) {
         data.dueDate = selectedDate.toISOString()
       }
@@ -181,43 +181,52 @@ export function CalendarView() {
     : []
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Calendar</h1>
-        <Button variant="outline" onClick={goToToday}>
+    <div className="p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold">Calendar</h1>
+        <Button variant="outline" size="sm" onClick={goToToday}>
           Today
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         <Card className="lg:col-span-2">
-          <CardHeader className="pb-2">
+          <CardHeader className="pb-2 px-3 sm:px-6">
             <div className="flex items-center justify-between">
-              <CardTitle>
-                {MONTHS[month]} {year}
+              <CardTitle className="text-base sm:text-lg">
+                <span className="hidden sm:inline">
+                  {MONTHS[month]} {year}
+                </span>
+                <span className="sm:hidden">
+                  {MONTHS[month].slice(0, 3)} {year}
+                </span>
               </CardTitle>
               <div className="flex items-center gap-1">
-                <Button size="icon" variant="ghost" onClick={goToPreviousMonth}>
+                <Button size="icon" variant="ghost" className="h-8 w-8" onClick={goToPreviousMonth}>
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
-                <Button size="icon" variant="ghost" onClick={goToNextMonth}>
+                <Button size="icon" variant="ghost" className="h-8 w-8" onClick={goToNextMonth}>
                   <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-2 sm:px-6">
             <div className="grid grid-cols-7 gap-px bg-muted rounded-lg overflow-hidden">
-              {DAYS.map((day) => (
-                <div key={day} className="bg-muted p-2 text-center text-sm font-medium text-muted-foreground">
-                  {day}
+              {DAYS.map((day, i) => (
+                <div
+                  key={day}
+                  className="bg-muted p-1 sm:p-2 text-center text-xs sm:text-sm font-medium text-muted-foreground"
+                >
+                  <span className="hidden sm:inline">{day}</span>
+                  <span className="sm:hidden">{DAYS_SHORT[i]}</span>
                 </div>
               ))}
               {calendarDays.map((day, index) => (
                 <div
                   key={index}
                   className={cn(
-                    "bg-background p-2 min-h-[100px] cursor-pointer transition-colors hover:bg-muted/50",
+                    "bg-background p-1 sm:p-2 min-h-[60px] sm:min-h-[100px] cursor-pointer transition-colors hover:bg-muted/50",
                     !day.isCurrentMonth && "bg-muted/30",
                     day.isToday && "ring-2 ring-primary ring-inset",
                     selectedDate &&
@@ -229,34 +238,58 @@ export function CalendarView() {
                 >
                   <div
                     className={cn(
-                      "text-sm font-medium mb-1",
+                      "text-xs sm:text-sm font-medium mb-1",
                       !day.isCurrentMonth && "text-muted-foreground",
                       day.isToday && "text-primary",
                     )}
                   >
                     {day.date.getDate()}
                   </div>
-                  <div className="space-y-1">
-                    {day.tasks.slice(0, 3).map((task) => (
-                      <div
-                        key={task._id}
-                        className={cn(
-                          "text-xs p-1 rounded truncate",
-                          task.status === "completed"
-                            ? "bg-green-100 text-green-800 line-through"
-                            : task.priority === "high"
-                              ? "bg-red-100 text-red-800"
-                              : task.priority === "medium"
-                                ? "bg-amber-100 text-amber-800"
-                                : "bg-muted text-muted-foreground",
-                        )}
-                      >
-                        {task.title}
-                      </div>
-                    ))}
-                    {day.tasks.length > 3 && (
-                      <div className="text-xs text-muted-foreground">+{day.tasks.length - 3} more</div>
-                    )}
+                  <div className="space-y-0.5 sm:space-y-1">
+                    {/* Mobile: Show dots for tasks */}
+                    <div className="flex flex-wrap gap-0.5 sm:hidden">
+                      {day.tasks.slice(0, 3).map((task) => (
+                        <div
+                          key={task._id}
+                          className={cn(
+                            "w-1.5 h-1.5 rounded-full",
+                            task.status === "completed"
+                              ? "bg-green-500"
+                              : task.priority === "high"
+                                ? "bg-red-500"
+                                : task.priority === "medium"
+                                  ? "bg-amber-500"
+                                  : "bg-gray-400",
+                          )}
+                        />
+                      ))}
+                      {day.tasks.length > 3 && (
+                        <span className="text-[10px] text-muted-foreground">+{day.tasks.length - 3}</span>
+                      )}
+                    </div>
+                    {/* Desktop: Show task previews */}
+                    <div className="hidden sm:block space-y-1">
+                      {day.tasks.slice(0, 3).map((task) => (
+                        <div
+                          key={task._id}
+                          className={cn(
+                            "text-xs p-1 rounded truncate",
+                            task.status === "completed"
+                              ? "bg-green-100 text-green-800 line-through"
+                              : task.priority === "high"
+                                ? "bg-red-100 text-red-800"
+                                : task.priority === "medium"
+                                  ? "bg-amber-100 text-amber-800"
+                                  : "bg-muted text-muted-foreground",
+                          )}
+                        >
+                          {task.title}
+                        </div>
+                      ))}
+                      {day.tasks.length > 3 && (
+                        <div className="text-xs text-muted-foreground">+{day.tasks.length - 3} more</div>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -265,12 +298,12 @@ export function CalendarView() {
         </Card>
 
         <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg">
+          <CardHeader className="px-3 sm:px-6">
+            <div className="flex items-center justify-between gap-2">
+              <CardTitle className="text-base sm:text-lg truncate">
                 {selectedDate
                   ? selectedDate.toLocaleDateString("en-US", {
-                      weekday: "long",
+                      weekday: "short",
                       month: "short",
                       day: "numeric",
                     })
@@ -283,18 +316,18 @@ export function CalendarView() {
               )}
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-3 sm:px-6">
             {!selectedDate ? (
               <p className="text-muted-foreground text-sm">Click on a day to view tasks</p>
             ) : selectedDayTasks.length === 0 ? (
               <p className="text-muted-foreground text-sm">No tasks for this day</p>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 {selectedDayTasks.map((task) => (
                   <div
                     key={task._id}
                     className={cn(
-                      "p-3 rounded-lg border cursor-pointer transition-colors hover:bg-muted/50",
+                      "p-2 sm:p-3 rounded-lg border cursor-pointer transition-colors hover:bg-muted/50",
                       task.status === "completed" && "opacity-60",
                     )}
                     onClick={() => handleEditTask(task)}
@@ -330,7 +363,7 @@ export function CalendarView() {
                         <Button
                           size="sm"
                           variant="ghost"
-                          className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                          className="text-green-600 hover:text-green-700 hover:bg-green-50 h-7 px-2"
                           onClick={(e) => {
                             e.stopPropagation()
                             handleComplete(task._id)

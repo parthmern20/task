@@ -33,7 +33,7 @@ export function Dashboard() {
 
   const handleComplete = async (id: string, action: "completed" | "skipped" | "deferred") => {
     try {
-      const body: any = { action }
+      const body: Record<string, unknown> = { action }
 
       if (action === "deferred") {
         const tomorrow = new Date()
@@ -114,11 +114,11 @@ export function Dashboard() {
   }
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
+    <div className="p-4 sm:p-6 max-w-5xl mx-auto">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-bold">Dashboard</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-xl sm:text-2xl font-bold">Dashboard</h1>
+          <p className="text-sm text-muted-foreground">
             {new Date().toLocaleDateString("en-US", {
               weekday: "long",
               month: "long",
@@ -126,13 +126,13 @@ export function Dashboard() {
             })}
           </p>
         </div>
-        <Button onClick={() => setFormOpen(true)}>
+        <Button onClick={() => setFormOpen(true)} className="w-full sm:w-auto">
           <Plus className="h-4 w-4 mr-2" />
           Add Task
         </Button>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-6">
         <StatCard
           title="Today"
           value={stats?.todayCount || 0}
@@ -153,7 +153,7 @@ export function Dashboard() {
           onClick={() => setActiveTab("backlog")}
         />
         <StatCard
-          title="Completed Today"
+          title="Completed"
           value={stats?.completedToday || 0}
           icon={CheckCircle}
           variant={stats?.completedToday ? "success" : "default"}
@@ -161,10 +161,16 @@ export function Dashboard() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="mb-4">
-          <TabsTrigger value="today">Today</TabsTrigger>
-          <TabsTrigger value="week">This Week</TabsTrigger>
-          <TabsTrigger value="backlog">Backlog</TabsTrigger>
+        <TabsList className="mb-4 w-full sm:w-auto">
+          <TabsTrigger value="today" className="flex-1 sm:flex-none">
+            Today
+          </TabsTrigger>
+          <TabsTrigger value="week" className="flex-1 sm:flex-none">
+            This Week
+          </TabsTrigger>
+          <TabsTrigger value="backlog" className="flex-1 sm:flex-none">
+            Backlog
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="today">
